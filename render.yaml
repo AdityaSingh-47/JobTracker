@@ -1,0 +1,31 @@
+services:
+  - type: web
+    name: jobtracker-backend
+    runtime: java
+    buildCommand: cd backend && mvn clean package -DskipTests
+    startCommand: cd backend && java -Dspring.profiles.active=prod -jar target/jobtracker-backend-1.0.0.jar
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_USERNAME
+        sync: false
+      - key: DATABASE_PASSWORD
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGINS
+        sync: false
+
+  - type: web
+    name: jobtracker-frontend
+    runtime: static
+    buildCommand: cd frontend && npm install && npm run build
+    staticPublishPath: frontend/dist
+    envVars:
+      - key: VITE_API_URL
+        sync: false
+
+databases:
+  - name: jobtracker-db
+    databaseName: jobtracker
+    user: jobtracker
